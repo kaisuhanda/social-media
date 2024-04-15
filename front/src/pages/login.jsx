@@ -42,6 +42,7 @@ function Login() {
                                 // If successful, sets the username in the local storage and moves to the dashboard
                                 if (keepLoginSuccess && findAccount) {
                                     localStorage.setItem('username', findAccount.username);
+                                    localStorage.setItem('name', findAccount.name);
                                     navigate('/dashboard')
                                 }
                             })

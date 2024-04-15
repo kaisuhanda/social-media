@@ -12,10 +12,9 @@ function Post({ updateTweets }) {
     const handlePost = () => {
         try {
             const url = 'http://localhost:2066/tweets/tweet'
-            const response = axios.post(url,
-                {
-                    tweet: tweet
-                }, {
+            axios.post(url, {
+                tweet: tweet
+            }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
@@ -89,8 +88,3 @@ function Post({ updateTweets }) {
 }
 
 export default Post;
-
-// {FaImage}
-// {MdGif}
-// {FaFile}
-// {MdEmojiEmotions}

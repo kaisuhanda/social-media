@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 // Define Router
-const { accountsRouter, tweetsRouter } = require("./routers")
+const { accountsRouter, tweetsRouter, likesRouter } = require("./routers")
 app.use("/accounts", accountsRouter);
 app.use("/tweets", tweetsRouter);
 app.use("/public", express.static("public"))

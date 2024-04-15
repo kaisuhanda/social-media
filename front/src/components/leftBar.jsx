@@ -11,6 +11,7 @@ import IconContainer from './customComponents/IconContainer';
 
 function LeftBar() {
     const username = localStorage.getItem('username');
+    const name = localStorage.getItem('name');
     return (
         <>
             <Box
@@ -87,7 +88,7 @@ function LeftBar() {
                             >
                                 {<RiAccountCircleFill size={70} />}
                                 <Box paddingLeft={'5px'}>
-                                    <Heading as={'h2'} size={'lg'}>Name</Heading>
+                                    <Heading as={'h2'} size={'md'}>{name}</Heading>
                                     <Heading as={'h4'} size={'sm'} color={'gray'}>@{username}</Heading>
                                 </Box>
                             </Flex>

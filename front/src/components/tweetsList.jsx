@@ -1,7 +1,7 @@
 import { Box, ListItem, UnorderedList, } from "@chakra-ui/react";
 import TweetBox from "./customComponents/tweetBox";
 
-function TweetsList({ tweets, getUsername }) {
+function TweetsList({ tweets, getUser, updateComments }) {
     return (
         <Box overflowY={"auto"} >
             <UnorderedList margin={0} maxHeight={'580px'}>
@@ -10,7 +10,7 @@ function TweetsList({ tweets, getUsername }) {
                         key={index}
                         listStyleType={"none"}
                     >
-                        <TweetBox tweet={tweet} getUsername={getUsername} />
+                        <TweetBox tweet={tweet} getUser={getUser} updateComments={updateComments}/>
                     </ListItem>
                 ))}
             </UnorderedList>

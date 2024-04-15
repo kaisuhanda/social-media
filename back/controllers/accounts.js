@@ -14,19 +14,36 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
+      return res.status(500).send(error);
+    }
+  },
+  getAccount: async (req, res, next) => {
+    try {
+      const findAccount = await accounts.findOne({
+        where: {
+          id: req.params.id
+        }
+      })
+      return res.status(200).send({
+        success: true,
+        test: findAccount
+      })
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send(error);
     }
   },
   register: async (req, res, next) => {
     try {
       // Confirm if account already exists
-      const exists = await accounts.findOne({
+      const findAccount = await accounts.findOne({
         where: {
-          email: req.body.email,
+          username: req.body.username,
         },
       });
 
       // Cannot create account if account already exists
-      if (exists) {
+      if (findAccount) {
         return res.status(400).send({
           success: false,
           message: "Account exists",

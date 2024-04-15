@@ -4,7 +4,11 @@ const { tweetsController } = require("../controllers");
 const router = require("express").Router();
 
 router.get("/", tweetsController.getTweets);
+router.get("/likes", tweetsController.getLikes);
 router.post("/tweet", tweetsController.tweet);
+router.post("/comment/:id", tweetsController.comment)
+router.post("/like/:id", tweetsController.like)
+router.post("/unlike/:id", tweetsController.unlike)
 // router.post("/tweet", validateToken, uploader().array("fileUpload", 10), productsController.addProduct);
 // router.patch("/delete/:id", validateToken, authorizeCashier, productsController.deleteProduct)
 // router.patch("/update/:id", validateToken, authorizeCashier, productsController.updateProduct)

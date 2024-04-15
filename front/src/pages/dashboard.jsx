@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 
 function Dashboard() {
     const [tweets, setTweets] = useState([])
+    const [comments, setComments] = useState([])
     const [accounts, setAccounts] = useState([])
     const fetchTweets = async () => {
         try {
@@ -34,17 +35,24 @@ function Dashboard() {
         }
     }
 
-    const getUsername = (userID) => {
+    const getUser = (userID) => {
         for (const account of accounts) {
             if (account.id === userID) {
-                return account.username
+                return account
             }
         }
-        return 'unknown'
+        return {
+            username: 'unknown',
+            name: 'unknown'
+        }
     }
 
     const updateTweets = (newTweet) => {
-        setTweets([newTweet, ...tweets]); 
+        setTweets([newTweet, ...tweets]);
+    }
+
+    const updateComments = (newComment) => {
+        setComments([newComment, ...comments])
     }
 
     useEffect(() => {
@@ -62,8 +70,8 @@ function Dashboard() {
                 maxW={'3xl'}
             >
                 <NavBar />
-                <Post updateTweets={updateTweets}/>
-                <TweetsList tweets={tweets} getUsername={getUsername}/>
+                <Post updateTweets={updateTweets} />
+                <TweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
             </Container>
         </Layout>
     )
