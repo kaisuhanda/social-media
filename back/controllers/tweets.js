@@ -2,6 +2,7 @@ const { tweets: TweetsData } = require('../models')
 const { comments: CommentsData } = require('../models')
 const { accounts: AccountsData } = require('../models')
 const { likes: LikesData } = require('../models')
+const { bookmarks: BookmarksData } = require('../models')
 const jwt = require("jsonwebtoken")
 
 module.exports = {
@@ -38,6 +39,21 @@ module.exports = {
             return res.status(200).send({
                 success: true,
                 likes: allLikes
+            })
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({
+                success: false,
+                error: error
+            })
+        }
+    },
+    getBookmarks: async (req, res, next) => {
+        try {
+            const allBookmarks = await BookmarksData.findAll()
+            return res.status(200).send({
+                success: true,
+                bookmarks: allBookmarks
             })
         } catch (error) {
             console.log(error);
@@ -154,14 +170,14 @@ module.exports = {
             const user_id = decoded.id;
             console.log("Token : ", token);
             console.log("User ID : ", user_id);
-    
+
             // Finding the tweet to unlike
             const findTweet = await TweetsData.findOne({
                 where: {
                     id: req.params.id
                 }
             });
-    
+
             // Finding the like and tweet relation
             const findLike = await LikesData.findOne({
                 where: {
@@ -169,7 +185,7 @@ module.exports = {
                     tweet_id: req.params.id
                 }
             });
-    
+
             // If the findLike doesn't exist
             if (!findLike) {
                 return res.status(400).send({
@@ -177,7 +193,7 @@ module.exports = {
                     message: 'You have not liked this tweet'
                 });
             }
-    
+
             // Checks if there are more than 0 likes
             if (findTweet.likes > 0) {
                 // Decrement likes
@@ -205,5 +221,93 @@ module.exports = {
                 error: error.message || 'Internal server error'
             });
         }
-    }    
+    },
+    bookmark: async (req, res, next) => {
+        try {
+            const token = req.headers.authorization.split(' ')[1]
+            const decoded = jwt.verify(token, process.env.secretToken)
+            const user_id = decoded.id
+            console.log("Token : ", token);
+            console.log("User ID : ", user_id);
+            const findTweet = await TweetsData.findOne({
+                where: {
+                    id: req.params.id
+                }
+            })
+            const findBookmark = await BookmarksData.findOne({
+                where: {
+                    user_id: user_id,
+                    tweet_id: req.params.id
+                }
+            })
+            if (findBookmark) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'already saved'
+                })
+            } else {
+                const newBookmark = await BookmarksData.create({
+                    user_id: user_id,
+                    tweet_id: req.params.id
+                })
+                await findTweet.save();
+                return res.status(200).send({
+                    success: true,
+                    tweet: findTweet,
+                    bookmark: newBookmark
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({
+                success: false,
+                error: error.message
+            })
+        }
+    },
+    unBookMark: async (req, res, next) => {
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+            const decoded = jwt.verify(token, process.env.secretToken);
+            const user_id = decoded.id;
+            console.log("Token : ", token);
+            console.log("User ID : ", user_id);
+
+            const findTweet = await TweetsData.findOne({
+                where: {
+                    id: req.params.id
+                }
+            });
+            const findBookmark = await BookmarksData.findOne({
+                where: {
+                    user_id: user_id,
+                    tweet_id: req.params.id
+                }
+            });
+            if (!findBookmark) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'You have not saved this tweet'
+                });
+            }
+            await BookmarksData.destroy({
+                where: {
+                    user_id: user_id,
+                    tweet_id: req.params.id
+                }
+            });
+            await findTweet.save();
+            return res.status(200).send({
+                success: true,
+                tweet: findTweet,
+                message: 'Bookmark removed successfully'
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({
+                success: false,
+                error: error.message || 'Internal server error'
+            });
+        }
+    },
 }

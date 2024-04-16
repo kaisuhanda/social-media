@@ -1,4 +1,5 @@
 const { accounts } = require("../models");
+const { bookmarks: BookmarksData } = require('../models')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const transporter = require("../mailer");

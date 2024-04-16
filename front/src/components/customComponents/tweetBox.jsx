@@ -89,18 +89,59 @@ function TweetBox({ tweet, getUser, updateComments }) {
         }
     }
 
+    const handleBookmark = (tweet_id) => {
+        try {
+            const url = `http://localhost:2066/tweets/bookmark/${tweet_id}` 
+            axios.post(url, null, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            }).then(response => {
+                setBookMarked(true)
+                console.log(response.data);
+            }).catch(error => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleUnBookmark = (tweet_id) => {
+        try {
+            const url = `http://localhost:2066/tweets/unbookmark/${tweet_id}` 
+            axios.post(url, null, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            }).then(response => {
+                setBookMarked(false)
+                console.log(response.data);
+            }).catch(error => {
+                console.log(error);
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
-        const fetchLikes = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:2066/tweets/likes");
-                const likes = response.data.likes;
+                const responseLikes = await axios.get("http://localhost:2066/tweets/likes");
+                const likes = responseLikes.data.likes;
                 const currentUserLike = likes.find(like => like.user_id === currentUserId && like.tweet_id === tweet.id);
                 setLiked(currentUserLike !== undefined)
+
+                const responseBookmarks = await axios.get("http://localhost:2066/tweets/bookmarks");
+                const bookmarks = responseBookmarks.data.bookmarks;
+                const currentUserBookmarks = bookmarks.find(bookmark => bookmark.user_id === currentUserId && bookmark.tweet_id === tweet.id);
+                setBookMarked(currentUserBookmarks !== undefined)
             } catch (error) {
                 console.log(error);
             }
         };
-        fetchLikes();
+        fetchData();
     }, [currentUserId, tweet.id]);
 
     return (
@@ -140,7 +181,7 @@ function TweetBox({ tweet, getUser, updateComments }) {
                         </ListItem>
                         <ListItem
                             marginRight={'10px'}
-                            onClick={() => setBookMarked(!bookMarked)}
+                            onClick={() => !bookMarked ? handleBookmark(tweet.id) : handleUnBookmark(tweet.id)}
                         >
                             {!bookMarked ? <FaRegBookmark size={20} /> : <FaBookmark size={20} />}
                         </ListItem>
