@@ -8,10 +8,13 @@ import { FaBookmark } from "react-icons/fa";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { CgMoreO } from "react-icons/cg";
 import IconContainer from './customComponents/IconContainer';
+import { useNavigate } from 'react-router-dom';
 
 function LeftBar() {
+    const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const name = localStorage.getItem('name');
+
     return (
         <>
             <Box
@@ -27,7 +30,7 @@ function LeftBar() {
                     <ListItem>
                         {<IoLogoYen />}
                     </ListItem>
-                    <ListItem display={'flex'}>
+                    <ListItem display={'flex'} onClick={() => navigate('/dashboard')}>
                         <IconContainer>
                             {<GoHomeFill />}
                         </IconContainer>
@@ -51,7 +54,7 @@ function LeftBar() {
                         </IconContainer>
                         Notifications
                     </ListItem>
-                    <ListItem display={'flex'}>
+                    <ListItem display={'flex'} onClick={() => navigate('/bookmarks')}>
                         <IconContainer>
                             {<FaBookmark />}
                         </IconContainer>

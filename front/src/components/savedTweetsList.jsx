@@ -6,6 +6,7 @@ import axios from "axios";
 function SavedTweetsList({ tweets, getUser, updateComments }) {
     const [bookmarks, setBookmarks] = useState([])
     const [savedTweets, setSavedTweets] = useState([])
+    const [savedTweetsID, setSavedTweetsID] = useState([])
     const [currentUserId, setCurrentUserId] = useState(0)
     const [currentUserBookmarks, setCurrentUserBookmarks] = useState([])
 
@@ -36,9 +37,23 @@ function SavedTweetsList({ tweets, getUser, updateComments }) {
 
     useEffect(() => {
         console.log("All bookmarks : ", bookmarks);
-        setCurrentUserBookmarks(bookmarks.filter(bookmark => bookmark.user_id === currentUserId))
+        setCurrentUserBookmarks(bookmarks.filter(bookmark => bookmark.user_id === currentUserId));
+    }, [bookmarks, currentUserId]);
+    
+    useEffect(() => {
         console.log("My bookmarks : ", currentUserBookmarks);
-    }, [bookmarks])
+        const bookmarkIDs = currentUserBookmarks.map(bookmark => bookmark.tweet_id);
+        setSavedTweetsID(bookmarkIDs);
+    }, [currentUserBookmarks]);
+    
+    useEffect(() => {
+        console.log("Tweets: ", tweets);
+        console.log("Saved Tweet IDs: ", savedTweetsID);
+        const filteredTweets = tweets.filter(tweet => savedTweetsID.includes(tweet.id));
+        console.log("Filtered Tweets: ", filteredTweets);
+        setSavedTweets(filteredTweets);
+    }, [savedTweetsID, tweets]);
+    
 
     return (
         <Box overflowY={"auto"} >

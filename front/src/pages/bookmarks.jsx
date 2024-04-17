@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import SavedTweetsList from "../components/savedTweetsList";
 import Layout from "./Layout"
-import axios from "axios";
+import { Box, Container, Heading } from "@chakra-ui/react";
 
 function BookMarksPage() {
     const [tweets, setTweets] = useState([])
@@ -49,9 +49,26 @@ function BookMarksPage() {
         setComments([newComment, ...comments])
     }
 
+    useEffect(() => {
+        fetchTweets()
+        fetchAccounts()
+    }, [])
+
     return (
         <Layout>
-            <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments}/>
+            <Container
+                bg={"black"}
+                color={"white"}
+                p={0} m={0}
+                maxW={'3xl'}
+            >
+                <Box textAlign={"center"} padding={'10px'}>
+                    <Heading as={'h2'}>
+                        Bookmarks
+                    </Heading>
+                </Box>
+                <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
+            </Container>
         </Layout>
     )
 }
