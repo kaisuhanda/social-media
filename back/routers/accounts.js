@@ -4,9 +4,13 @@ const router = require("express").Router();
 
 router.get("/", accountsController.getData);
 router.get("/find/:id", accountsController.getAccount);
+router.get("/my-followings", accountsController.myFollowings)
 router.post("/register", validateRegis, accountsController.register);
 router.post("/login", accountsController.login);
 router.get("/keep-login", validateToken, accountsController.keepLogin);
+router.patch("/edit", accountsController.editProfile)
+router.post("/follow/:id", accountsController.follow)
+router.post("/unfollow/:id", accountsController.unfollow)
 
 module.exports = router;
 

@@ -1,4 +1,4 @@
-import { Box, UnorderedList, ListItem, Button, Flex, Heading } from '@chakra-ui/react';
+import { Box, UnorderedList, ListItem, Button, Flex, Heading, useDisclosure } from '@chakra-ui/react';
 import { IoLogoYen } from "react-icons/io";
 import { GoHomeFill } from "react-icons/go";
 import { FaSearch } from "react-icons/fa";
@@ -9,12 +9,13 @@ import { RiAccountCircleFill } from "react-icons/ri";
 import { CgMoreO } from "react-icons/cg";
 import IconContainer from './customComponents/IconContainer';
 import { useNavigate } from 'react-router-dom';
+import ProfileModal from './profileModal';
 
 function LeftBar() {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const name = localStorage.getItem('name');
-
+    const { isOpen, onOpen, onClose } = useDisclosure()
     return (
         <>
             <Box
@@ -60,7 +61,10 @@ function LeftBar() {
                         </IconContainer>
                         Bookmarks
                     </ListItem>
-                    <ListItem display={'flex'}>
+                    <ListItem
+                        onClick={() => navigate('/profile')}
+                        display={'flex'}
+                    >
                         <IconContainer>
                             {<RiAccountCircleFill />}
                         </IconContainer>

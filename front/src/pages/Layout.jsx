@@ -7,7 +7,7 @@ function Layout(props) {
         <Flex>
             <LeftBar />
             {props.children}
-            <RightBar />
+            <RightBar accounts={props.accounts}/>
         </Flex>
     )
 }

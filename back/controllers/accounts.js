@@ -1,39 +1,98 @@
 const { accounts } = require("../models");
-const { bookmarks: BookmarksData } = require('../models')
+const { follows } = require("../models");
+const { comments: CommentsData } = require('../models')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const transporter = require("../mailer");
+const { tweets } = require("../models");
 
 module.exports = {
   getData: async (req, res, next) => {
     try {
-      // allAccounts array for containing all accounts from the module
-      const allAccounts = await accounts.findAll();
+      const allAccounts = await accounts.findAll({
+        include: [
+          {
+            model: follows,
+            as: 'followings', // Follows where the account is following others
+            attributes: ['following_id'],
+          },
+          {
+            model: follows,
+            as: 'followers', // Follows where the account is followed by others
+            attributes: ['follower_id'],
+          },
+          {
+            model: tweets,
+            as: 'tweets', // The account's tweets
+            attributes: ['id', 'tweet', 'user_id', 'likes'],
+            include: [{
+              model: CommentsData,
+              required: false,
+              attributes: [
+                ['comment', 'comment'],
+                ['commenterUsername', 'commenterUsername'],
+                ['commenterName', 'commenterName'],
+                ['user_id', 'user_id']
+              ],
+              order: [['createdAt', 'DESC']]
+            }],
+          },
+        ]
+      });
       return res.status(200).send({
         success: true,
         accounts: allAccounts
       });
     } catch (error) {
       console.log(error);
-      return res.status(500).send(error);
+      return res.status(500).send(error.message);
     }
   },
   getAccount: async (req, res, next) => {
     try {
       const findAccount = await accounts.findOne({
         where: {
-          id: req.params.id
-        }
-      })
+          id: req.params.id,
+        },
+        include: [
+          {
+            model: follows,
+            as: 'followings', // Follows where the account is following others
+            attributes: ['following_id'],
+          },
+          {
+            model: follows,
+            as: 'followers', // Follows where the account is followed by others
+            attributes: ['follower_id'],
+          },
+          {
+            model: tweets,
+            as: 'tweets', // The account's tweets
+            attributes: ['id', 'tweet', 'user_id', 'likes'],
+            include: [{
+              model: CommentsData,
+              required: false,
+              attributes: [
+                ['comment', 'comment'],
+                ['commenterUsername', 'commenterUsername'],
+                ['commenterName', 'commenterName'],
+                ['user_id', 'user_id']
+              ],
+              order: [['createdAt', 'DESC']]
+            }],
+          },
+        ],
+      });
       return res.status(200).send({
         success: true,
-        test: findAccount
-      })
+        findAccount,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).send(error);
     }
   },
+
   register: async (req, res, next) => {
     try {
       // Confirm if account already exists
@@ -152,8 +211,34 @@ module.exports = {
       const findAccount = await accounts.findOne({
         where: {
           id: req.accountData.id,
-        },
-        raw: true,
+        }, include: [
+          {
+            model: follows,
+            as: 'followings', // Follows where the account is following others
+            attributes: ['following_id'],
+          },
+          {
+            model: follows,
+            as: 'followers', // Follows where the account is followed by others
+            attributes: ['follower_id'],
+          },
+          {
+            model: tweets,
+            as: 'tweets', // The account's tweets
+            attributes: ['id', 'tweet', 'user_id', 'likes'],
+            include: [{
+              model: CommentsData,
+              required: false,
+              attributes: [
+                ['comment', 'comment'],
+                ['commenterUsername', 'commenterUsername'],
+                ['commenterName', 'commenterName'],
+                ['user_id', 'user_id']
+              ],
+              order: [['createdAt', 'DESC']]
+            }],
+          },
+        ]
       })
       console.log("Account : ", findAccount);
 
@@ -178,6 +263,163 @@ module.exports = {
       console.log(error);
     }
   },
+  editProfile: async (req, res, next) => {
+    try {
+      const token = req.headers.authorization.split(" ")[1]; // Bearer <token>
+      const decoded = jwt.verify(token, process.env.secretToken); // Verify token and get user ID
+      const userId = decoded.id;
+
+      const user = await accounts.findByPk(userId);
+      if (!user) {
+        return res.status(404).send({
+          success: false,
+          message: "User not found"
+        });
+      }
+      const { email, name, username } = req.body;
+
+      if (email) {
+        user.email = email;
+      }
+      if (name) {
+        user.name = name;
+      }
+      if (username) {
+        user.username = username;
+      }
+
+      await user.save();
+
+      return res.status(200).send({
+        success: true,
+        message: "Profile updated successfully",
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          username: user.username,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).send({
+        success: false,
+        message: error
+      })
+    }
+  },
+  follow: async (req, res, next) => {
+    try {
+      const token = req.headers.authorization.split(' ')[1]
+      const decoded = jwt.verify(token, process.env.secretToken)
+      const user_id = decoded.id
+      console.log("Token : ", token);
+      console.log("User ID : ", user_id);
+      if (parseInt(req.params.id) === user_id) {
+        return res.status(400).send({
+          success: false,
+          message: "You cannot follow your own account"
+        })
+      }
+      const findFollow = await follows.findOne({
+        where: {
+          follower_id: user_id,
+          following_id: parseInt(req.params.id)
+        }
+      });
+
+      if (findFollow !== null) {
+        console.log("a ", user_id);
+        console.log("b ", parseInt(req.params.id));
+        return res.status(400).send('Already followed');
+      }
+
+      const newFollow = await follows.create({
+        follower_id: user_id,
+        following_id: parseInt(req.params.id)
+      })
+      return res.status(200).send({
+        success: true,
+        follow: newFollow
+      })
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({
+        success: false,
+        message: error
+      })
+    }
+  },
+  unfollow: async (req, res, next) => {
+    try {
+      const token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.secretToken);
+      const user_id = decoded.id;
+
+      const findFollow = await follows.findOne({
+        where: {
+          follower_id: user_id,
+          following_id: parseInt(req.params.id),
+        },
+      });
+
+      if (!findFollow) {
+        return res.status(400).send("Follow relation not found");
+      }
+
+      await follows.destroy({
+        where: {
+          id: findFollow.id,
+        },
+      });
+
+      return res.status(200).send({
+        success: true,
+        message: "Successfully unfollowed",
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({
+        success: false,
+        message: error.message || "An error occurred",
+      });
+    }
+  },
+  myFollowings: async (req, res, next) => {
+    try {
+      const token = req.headers.authorization.split(' ')[1]
+      const decoded = jwt.verify(token, process.env.secretToken)
+      const user_id = decoded.id
+      console.log("Token : ", token);
+      console.log("User ID : ", user_id);
+
+      const myFollowings = await follows.findAll({
+        where: {
+          follower_id: user_id
+        }
+      })
+
+      const myFollowingsId = myFollowings.map((follow) => follow.following_id)
+
+      const myFollowingsAccounts = await accounts.findAll({
+        where: {
+          id: myFollowingsId
+        }
+      })
+
+      console.log("My Followings : ", myFollowings);
+      return res.status(200).send({
+        success: true,
+        follows: myFollowingsAccounts
+      })
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({
+        success: false,
+        message: error
+      })
+    }
+  }
 };
 
 

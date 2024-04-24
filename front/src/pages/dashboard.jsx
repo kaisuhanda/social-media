@@ -4,9 +4,11 @@ import Post from "../components/post"
 import TweetsList from "../components/tweetsList"
 import { Container } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
+import FollowingTweetsList from "../components/FollowingTweetsList"
 
 function Dashboard() {
     const [tweets, setTweets] = useState([])
+    const [following, setFollowing] = useState(false)
     const [comments, setComments] = useState([])
     const [accounts, setAccounts] = useState([])
     const fetchTweets = async () => {
@@ -62,19 +64,31 @@ function Dashboard() {
     }, [])
 
     return (
-        <Layout>
+        <Layout accounts={accounts}>
             <Container
                 bg={"black"}
                 color={"white"}
                 p={0} m={0}
                 maxW={'3xl'}
             >
-                <NavBar />
+                <NavBar following={following} setFollowing={setFollowing} />
                 <Post updateTweets={updateTweets} />
-                <TweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
+                {!following ? (
+                    <TweetsList
+                        tweets={tweets}
+                        getUser={getUser}
+                        updateComments={updateComments}
+                    />
+                ) : (
+                    <FollowingTweetsList
+                        tweets={tweets}
+                        getUser={getUser}
+                        updateComments={updateComments}
+                    />
+                )}
             </Container>
         </Layout>
-    )
+    )    
 }
 
 export default Dashboard

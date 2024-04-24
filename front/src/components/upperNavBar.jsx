@@ -1,8 +1,7 @@
 import { Box, Container, UnorderedList, ListItem, Heading } from '@chakra-ui/react';
 import { useState } from 'react';
 
-function NavBar() {
-    const [activeTab, setActiveTab] = useState(false)
+function NavBar({ following, setFollowing }) {
     return (
         <>
             <Box
@@ -23,20 +22,20 @@ function NavBar() {
                         <ListItem
                             marginX={'70px'}
                             marginTop={'35px'}
-                            borderBottom={!activeTab ? '4px' : ''}
+                            borderBottom={!following ? '4px' : ''}
                             borderRadius={'2px'}
                             borderColor={'lightblue'}
-                            onClick={() => setActiveTab(false)}
+                            onClick={() => setFollowing(false)}
                         >
                             <Heading as={'h3'} size={'sm'} padding={'5px'}>For you</Heading>
                         </ListItem>
                         <ListItem
                             marginX={'70px'}
                             marginTop={'35px'}
-                            borderBottom={activeTab ? '4px' : ''}
+                            borderBottom={following ? '4px' : ''}
                             borderRadius={'2px'}
                             borderColor={'lightblue'}
-                            onClick={() => setActiveTab(true)}
+                            onClick={() => setFollowing(true)}
                         >
                             <Heading as={'h3'} size={'sm'} padding={'5px'}>Following</Heading>
                         </ListItem>

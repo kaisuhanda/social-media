@@ -4,6 +4,7 @@ import Login from './pages/login';
 import Dashboard from './pages/dashboard';
 import { Box } from '@chakra-ui/react';
 import BookMarksPage from './pages/bookmarks';
+import ProfilePage from './pages/profile';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path='/' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/bookmarks' element={<BookMarksPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
       </Routes>
     </Box>
   )

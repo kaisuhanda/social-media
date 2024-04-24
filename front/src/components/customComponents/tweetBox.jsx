@@ -55,13 +55,14 @@ function TweetBox({ tweet, getUser, updateComments }) {
     const handleLike = (tweet_id) => {
         try {
             console.log(localStorage.getItem('token'));
+            console.log(tweet_id);
             const url = `http://localhost:2066/tweets/like/${tweet_id}`
             axios.post(url, null, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             }).then(response => {
-                console.log(response.data);
+                console.log('Response data : ', response.data);
                 setLiked(true)
             }).catch(error => {
                 console.log(error);

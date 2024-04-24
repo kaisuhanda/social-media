@@ -1,8 +1,46 @@
 import { Box, Heading, UnorderedList, ListItem } from '@chakra-ui/react';
 import AccountListItem from './customComponents/accountListItem';
 import SearchBar from './search';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function RightBar() {
+    const [currentUserId, setCurrentUserId] = useState(0)
+    const [accounts, setAccounts] = useState([])
+
+    const fetchAccounts = async () => {
+        try {
+            let url = 'http://localhost:2066/accounts'
+            const response = await fetch(url)
+            const accountResponse = await response.json()
+            const accountsData = accountResponse.accounts;
+            setAccounts(accountsData);
+            console.log("Accounts response : ", accountsData);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchAccounts()
+    }, [])
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const url = "http://localhost:2066/accounts/keep-login"
+        axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            const { success: keepLoginSuccess, findAccount } = response.data;
+            if (keepLoginSuccess && findAccount) {
+                setCurrentUserId(findAccount.id)
+            }
+        })
+        console.log("abchdbj ", currentUserId);
+    }, [])
+
     return (
         <>
             <Box
@@ -47,9 +85,15 @@ function RightBar() {
                         <ListItem>
                             <Heading as={'h2'} size={'lg'}>Who to follow</Heading>
                         </ListItem>
-                        <AccountListItem/>
-                        <AccountListItem/>
-                        <AccountListItem/>
+                        {accounts
+                            .filter(account => account.id != currentUserId)
+                            .slice(0, 3).map((account, index) => (
+                                <AccountListItem
+                                    key={index}
+                                    account={account}
+                                    currentUserId={currentUserId}
+                                />
+                            ))}
                     </UnorderedList>
                 </Box>
             </Box>
