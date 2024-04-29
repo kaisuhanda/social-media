@@ -1,12 +1,14 @@
-import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, } from '@chakra-ui/react';
+import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, Box, useDisclosure, } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import PasswordModal from './customComponents/resetPasswordModal';
 
 function ProfileModal({ onClose, isOpen }) {
     const [nameInput, setNameInput] = useState('');
     const [usernameInput, setUsernameInput] = useState('');
     const [emailInput, setEmailInput] = useState('');
     const [myAccount, setMyAccount] = useState({});
+    const { isOpen: isOpenPassword, onOpen: onOpenPassword, onClose: onClosePassword } = useDisclosure()
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -40,14 +42,14 @@ function ProfileModal({ onClose, isOpen }) {
             }
         }).then((response) => {
             console.log("Profile updated:", response.data);
-            onClose(); // Close the modal on successful update
+            onClose(); 
         }).catch((error) => {
             console.error("Error updating profile:", error);
         });
     };
 
     return (
-        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'}>
+        <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose} size={'xl'} variant={'black'} isCentered>
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Profile</ModalHeader>
@@ -77,11 +79,17 @@ function ProfileModal({ onClose, isOpen }) {
                         />
                     </FormControl>
                 </ModalBody>
-                <ModalFooter>
-                    <Button colorScheme='blue' mr={3} onClick={handleSaveChanges}>
-                        Save changes
-                    </Button>
-                    <Button onClick={onClose}>Cancel</Button>
+                <ModalFooter justifyContent={'space-between'}>
+                    <Box>
+                        <Button onClick={onOpenPassword}>Reset password</Button>
+                        <PasswordModal onClose={onClosePassword} isOpen={isOpenPassword}/>
+                    </Box>
+                    <Box>
+                        <Button colorScheme='blue' mr={3} onClick={handleSaveChanges}>
+                            Save changes
+                        </Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </Box>
                 </ModalFooter>
             </ModalContent>
         </Modal>

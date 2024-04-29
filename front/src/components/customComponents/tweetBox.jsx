@@ -133,7 +133,6 @@ function TweetBox({ tweet, getUser, updateComments }) {
                 const likes = responseLikes.data.likes;
                 const currentUserLike = likes.find(like => like.user_id === currentUserId && like.tweet_id === tweet.id);
                 setLiked(currentUserLike !== undefined)
-
                 const responseBookmarks = await axios.get("http://localhost:2066/tweets/bookmarks");
                 const bookmarks = responseBookmarks.data.bookmarks;
                 const currentUserBookmarks = bookmarks.find(bookmark => bookmark.user_id === currentUserId && bookmark.tweet_id === tweet.id);

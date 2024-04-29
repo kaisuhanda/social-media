@@ -14,10 +14,13 @@ module.exports = {
                     required: false,
                     attributes: [
                         ['comment', 'comment'],
-                        ['commenterUsername', 'commenterUsername'],
-                        ['commenterName', 'commenterName'],
                         ['user_id', 'user_id']
                     ],
+                    include: [{
+                        model: AccountsData, // Include the commenter's account info
+                        as: 'commenter',
+                        attributes: ['username', 'name'], // Fetch only the username and name
+                    }],
                     order: [['createdAt', 'DESC']]
                 }],
             })
@@ -29,7 +32,7 @@ module.exports = {
             console.log(error);
             return res.status(500).send({
                 success: false,
-                error: error
+                error: error.message
             })
         }
     },
@@ -97,14 +100,14 @@ module.exports = {
                 where: {
                     id: user_id
                 },
-                attributes: ['username', 'name']
+                // attributes: ['username', 'name']
             })
             const comment = await CommentsData.create({
                 user_id: user_id,
                 tweet_id: req.params.id,
                 comment: req.body.comment,
-                commenterUsername: commenter.username,
-                commenterName: commenter.name
+                // commenterUsername: commenter.username,
+                // commenterName: commenter.name
             })
             return res.status(200).send({
                 success: true,

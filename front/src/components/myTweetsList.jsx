@@ -4,7 +4,6 @@ import TweetBox from "./customComponents/tweetBox"
 import axios from "axios"
 
 function MyTweetsList({ myTweets }) {
-    const [myPosts, setMyPosts] = useState(true)
     const [myAccount, setMyAccount] = useState({})
 
     useEffect(() => {
@@ -37,44 +36,6 @@ function MyTweetsList({ myTweets }) {
     
     return (
         <Box>
-            <Box
-                bg={'black'}
-                color={'white'}
-                height={'70px'}
-                borderBottom={'1px'}
-                borderColor={'gray'}
-            >
-                <Container textAlign={'center'} height={'full'}>
-                    <UnorderedList
-                        height={'full'}
-                        display={'flex'}
-                        alignItems={'center'}
-                        justifyContent={'center'}
-                        listStyleType={'none'}
-                    >
-                        <ListItem
-                            marginX={'50px'}
-                            marginTop={'35px'}
-                            borderBottom={myPosts ? '4px' : ''}
-                            borderRadius={'2px'}
-                            borderColor={'lightblue'}
-                            onClick={() => setMyPosts(true)}
-                        >
-                            <Heading as={'h3'} size={'sm'} padding={'5px'}>My Tweets</Heading>
-                        </ListItem>
-                        <ListItem
-                            marginX={'50px'}
-                            marginTop={'35px'}
-                            borderBottom={!myPosts ? '4px' : ''}
-                            borderRadius={'2px'}
-                            borderColor={'lightblue'}
-                            onClick={() => setMyPosts(false)}
-                        >
-                            <Heading as={'h3'} size={'sm'} padding={'5px'}>Bookmarked Tweets</Heading>
-                        </ListItem>
-                    </UnorderedList>
-                </Container>
-            </Box>
             <Box overflowY={"auto"} >
                 <UnorderedList margin={0} maxHeight={'580px'}>
                     {myTweets.map((tweet, index) => (

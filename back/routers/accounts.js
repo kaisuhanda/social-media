@@ -11,6 +11,7 @@ router.get("/keep-login", validateToken, accountsController.keepLogin);
 router.patch("/edit", accountsController.editProfile)
 router.post("/follow/:id", accountsController.follow)
 router.post("/unfollow/:id", accountsController.unfollow)
+router.post("/reset-password", validateToken, accountsController.resetPass)
 
 module.exports = router;
 

@@ -12,19 +12,19 @@ function AccountListItem({ account, currentUserId }) {
         const token = localStorage.getItem("token");
         const url = "http://localhost:2066/accounts/my-followings";
         axios.get(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }).then((response) => {
-            setMyFollowings(response.data.follows);
-            const isFollowed = response.data.follows.some(
-                (following) => following.id === account.id
-            );
-            setFollowed(isFollowed);
+          setMyFollowings(response.data.follows);
+          const isFollowed = response.data.follows.some(
+            (following) => following.id === account.id // Correct condition
+          );
+          setFollowed(isFollowed);
         }).catch((error) => {
-            console.error(error);
+          console.error(error);
         });
-    }, [account.id]); 
+      }, [account.id]); // Dependency on 'account.id'
 
     const handleFollow = (user_id) => {
         try {

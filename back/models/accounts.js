@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.tweets, { foreignKey: 'user_id' });
 
       // A user has many comments
-      this.hasMany(models.comments, { foreignKey: 'user_id' });
+      this.hasMany(models.comments, { foreignKey: 'user_id', as: 'comments' });
 
       // A user can follow many others (account follows other accounts)
       this.hasMany(models.follows, { 

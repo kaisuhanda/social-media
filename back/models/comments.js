@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.accounts, { foreignKey: 'user_id' });
+      this.belongsTo(models.accounts, { foreignKey: 'user_id', as: 'commenter' });
       this.belongsTo(models.tweets, { foreignKey: 'tweet_id' });
     }
   }
@@ -33,8 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     comment: DataTypes.STRING,
-    commenterUsername: DataTypes.STRING,
-    commenterName: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'comments',

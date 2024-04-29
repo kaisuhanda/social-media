@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Heading, useDisclosure } from "@chakra-ui/react"
+import { Box, Button, Container, Flex, Heading, ListItem, UnorderedList, useDisclosure } from "@chakra-ui/react"
 import Layout from "./Layout"
 import { FaArrowLeft } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -7,13 +7,17 @@ import axios from "axios";
 import ProfileModal from "../components/profileModal";
 import IconContainer from "../components/customComponents/IconContainer";
 import MyTweetsList from "../components/myTweetsList";
+import SavedTweetsList from "../components/savedTweetsList";
 
 function ProfilePage() {
     const [myAccount, setMyAccount] = useState({});
+    const [tweets, setTweets] = useState([])
     const [myTweets, setMyTweets] = useState([])
     const [followers, setFollowers] = useState([])
+    const [myPosts, setMyPosts] = useState(true)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [myFollowings, setMyFollowings] = useState([])
+    const [accounts, setAccounts] = useState([])
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -27,9 +31,9 @@ function ProfilePage() {
             setMyAccount(account);
             setMyTweets(account.tweets)
             setFollowers(account.followers)
-            console.log("Account:", myAccount); 
-            console.log("Tweets:", myTweets);
-            console.log("Followers:", followers); 
+            // console.log("Account:", myAccount);
+            // console.log("Tweets:", myTweets);
+            // console.log("Followers:", followers);
         }).catch((error) => {
             console.error(error);
         });
@@ -43,7 +47,7 @@ function ProfilePage() {
                 Authorization: `Bearer ${token}`
             }
         }).then(response => {
-            console.log("response : ", response.data.follows);
+            // console.log("response : ", response.data.follows);
             setMyFollowings(response.data.follows)
         }).catch(error => {
             console.log(token);
@@ -51,21 +55,61 @@ function ProfilePage() {
         })
     }, [])
 
+    useEffect(() => {
+        try {
+            let url = 'http://localhost:2066/accounts'
+            axios.get(url).then(response => {
+                console.log("Accounts response : ", response.data.accounts);
+                setAccounts(response.data.accounts)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
+
+    useEffect(() => {
+        try {
+            let url = 'http://localhost:2066/tweets'
+            axios.get(url).then(response => {
+                console.log("Tweets response : ", response.data.tweets);
+                setTweets(response.data.tweets)
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
+
+    const updateComments = (newComment) => {
+        setComments([newComment, ...comments])
+    }
+
+    const getUser = (userID) => {
+        for (const account of accounts) {
+            if (account.id === userID) {
+                return account
+            }
+        }
+        return {
+            username: 'unknown',
+            name: 'unknown'
+        }
+    }
+
     function formatMonthYear(isoDateString) {
         if (!isoDateString) {
             return 'Invalid date';
-        }     
-        const date = new Date(isoDateString);     
+        }
+        const date = new Date(isoDateString);
         if (isNaN(date)) {
             return 'Invalid date';
-        }  
+        }
         const formatter = new Intl.DateTimeFormat('en-GB', {
             year: 'numeric',
             month: 'long',
         });
         return formatter.format(date);
     }
-    
+
     return (
         <Layout>
             <Container
@@ -118,7 +162,49 @@ function ProfilePage() {
                         </Flex>
                     </Flex>
                 </Box>
-                <MyTweetsList myTweets={myTweets}/>
+                <Box
+                    bg={'black'}
+                    color={'white'}
+                    height={'70px'}
+                    borderBottom={'1px'}
+                    borderColor={'gray'}
+                >
+                    <Container textAlign={'center'} height={'full'}>
+                        <UnorderedList
+                            height={'full'}
+                            display={'flex'}
+                            alignItems={'center'}
+                            justifyContent={'center'}
+                            listStyleType={'none'}
+                        >
+                            <ListItem
+                                marginX={'50px'}
+                                marginTop={'35px'}
+                                borderBottom={myPosts ? '4px' : ''}
+                                borderRadius={'2px'}
+                                borderColor={'lightblue'}
+                                onClick={() => setMyPosts(true)}
+                            >
+                                <Heading as={'h3'} size={'sm'} padding={'5px'}>My Tweets</Heading>
+                            </ListItem>
+                            <ListItem
+                                marginX={'50px'}
+                                marginTop={'35px'}
+                                borderBottom={!myPosts ? '4px' : ''}
+                                borderRadius={'2px'}
+                                borderColor={'lightblue'}
+                                onClick={() => setMyPosts(false)}
+                            >
+                                <Heading as={'h3'} size={'sm'} padding={'5px'}>Bookmarked Tweets</Heading>
+                            </ListItem>
+                        </UnorderedList>
+                    </Container>
+                </Box>
+                {myPosts ?
+                    <MyTweetsList myTweets={myTweets} getUser={getUser} updateComments={updateComments} />
+                    :
+                    <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
+                }
             </Container>
         </Layout>
     )

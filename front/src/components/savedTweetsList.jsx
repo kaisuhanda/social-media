@@ -56,7 +56,7 @@ function SavedTweetsList({ tweets, getUser, updateComments }) {
     
 
     return (
-        <Box overflowY={"auto"} >
+        <Box overflowY={"auto"}>
             <UnorderedList margin={0} maxHeight={'580px'}>
                 {savedTweets.map((tweet, index) => (
                     <ListItem

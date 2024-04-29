@@ -1,9 +1,13 @@
 import { Box, Button, Flex, Heading, ListItem, UnorderedList } from "@chakra-ui/react";
 import IconContainer from "./IconContainer";
 import { RiAccountCircleFill } from "react-icons/ri";
+import { useEffect } from "react";
 
 
 function CommentBox({ comments }) {
+    // useEffect(() => {
+    //     console.log(comments);
+    // }, [])
     return (
         <Box
             padding={'10px'}
@@ -17,8 +21,8 @@ function CommentBox({ comments }) {
                             </IconContainer>
                             <Box>
                                 <Box>
-                                    <Heading as={'h2'} size={'sm'}>{commentObj.commenterName}</Heading>
-                                    <Heading as={'h2'} size={'xs'} color={"gray"}>@{commentObj.commenterUsername}</Heading>
+                                    <Heading as={'h2'} size={'sm'}>{commentObj.commenter.name}</Heading>
+                                    <Heading as={'h2'} size={'xs'} color={"gray"}>@{commentObj.commenter.username}</Heading>
                                 </Box>
                                 <Box>
                                     {commentObj.comment}

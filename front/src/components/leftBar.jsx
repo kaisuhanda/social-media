@@ -10,12 +10,21 @@ import { CgMoreO } from "react-icons/cg";
 import IconContainer from './customComponents/IconContainer';
 import { useNavigate } from 'react-router-dom';
 import ProfileModal from './profileModal';
+import { IoIosMore } from "react-icons/io";
+import { useEffect, useState } from 'react';
 
 function LeftBar() {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
     const name = localStorage.getItem('name');
+    const [settingsVisible, setSettingsVisible] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const handleLogout = () => {
+        localStorage.setItem('token', '')
+        navigate('/')
+    }
+
     return (
         <>
             <Box
@@ -90,15 +99,32 @@ function LeftBar() {
                             flexDirection={"column"}
                             justifyContent={"flex-end"}
                         >
-                            <Flex
-                                h={'50%'}
-                            >
-                                {<RiAccountCircleFill size={70} />}
-                                <Box paddingLeft={'5px'}>
-                                    <Heading as={'h2'} size={'md'}>{name}</Heading>
-                                    <Heading as={'h4'} size={'sm'} color={'gray'}>@{username}</Heading>
+                            {settingsVisible && (
+                                <Box
+                                    bg={'gray.900'}
+                                    paddingY={'8px'}
+                                    paddingX={'50px'}
+                                    borderRadius={'20px'}
+                                    zIndex={10}
+                                    position={'absolute'}
+                                    marginBottom={'90px'}
+                                >
+                                    <Box fontWeight={600} onClick={handleLogout}>log out</Box>
+                                    <Box fontWeight={600} onClick={onOpen}>edit profile</Box>
+                                    <ProfileModal onClose={onClose} isOpen={isOpen} />
                                 </Box>
-                            </Flex>
+                            )}
+                            <Box onClick={() => setSettingsVisible(!settingsVisible)}>
+                                <Flex
+                                    h={'50%'}
+                                >
+                                    {<RiAccountCircleFill size={70} />}
+                                    <Box paddingLeft={'5px'}>
+                                        <Heading as={'h2'} size={'md'}>{name}</Heading>
+                                        <Heading as={'h4'} size={'sm'} color={'gray'}>@{username}</Heading>
+                                    </Box>
+                                </Flex>
+                            </Box>
                         </Box>
                     </ListItem>
                 </UnorderedList>

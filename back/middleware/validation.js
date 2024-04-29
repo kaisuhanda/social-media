@@ -31,6 +31,7 @@ module.exports = {
           })
         } else {
           req.accountData = verifyData;
+          console.log("token masuk : ", req.token);
           next();
         }
       }

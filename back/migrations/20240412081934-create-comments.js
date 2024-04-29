@@ -18,12 +18,6 @@ module.exports = {
       comment: {
         type: Sequelize.STRING
       },
-      commenterUsername: {
-        type: Sequelize.STRING
-      },
-      commenterName: {
-        type: Sequelize.STRING
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

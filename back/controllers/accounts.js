@@ -30,10 +30,13 @@ module.exports = {
               required: false,
               attributes: [
                 ['comment', 'comment'],
-                ['commenterUsername', 'commenterUsername'],
-                ['commenterName', 'commenterName'],
                 ['user_id', 'user_id']
               ],
+              include: [{
+                model: accounts, // Include the commenter's account info
+                as: 'commenter',
+                attributes: ['username', 'name'], // Fetch only the username and name
+              }],
               order: [['createdAt', 'DESC']]
             }],
           },
@@ -74,10 +77,13 @@ module.exports = {
               required: false,
               attributes: [
                 ['comment', 'comment'],
-                ['commenterUsername', 'commenterUsername'],
-                ['commenterName', 'commenterName'],
                 ['user_id', 'user_id']
               ],
+              include: [{
+                model: accounts, // Include the commenter's account info
+                as: 'commenter',
+                attributes: ['username', 'name'], // Fetch only the username and name
+              }],
               order: [['createdAt', 'DESC']]
             }],
           },
@@ -146,7 +152,8 @@ module.exports = {
       // Account successfully registered
       return res.status(201).send({
         success: true,
-        message: "Register success",
+        message: result,
+        token: token
       });
     } catch (error) {
       console.log(error);
@@ -231,10 +238,13 @@ module.exports = {
               required: false,
               attributes: [
                 ['comment', 'comment'],
-                ['commenterUsername', 'commenterUsername'],
-                ['commenterName', 'commenterName'],
                 ['user_id', 'user_id']
               ],
+              include: [{
+                model: accounts, // Include the commenter's account info
+                as: 'commenter',
+                attributes: ['username', 'name'], // Fetch only the username and name
+              }],
               order: [['createdAt', 'DESC']]
             }],
           },
@@ -375,7 +385,7 @@ module.exports = {
 
       return res.status(200).send({
         success: true,
-        message: "Successfully unfollowed",
+        unfollowed: findFollow,
       });
     } catch (error) {
       console.error(error);
@@ -419,7 +429,36 @@ module.exports = {
         message: error
       })
     }
-  }
+  },
+  resetPass: async (req, res, next) => {
+    try {
+      const checkedAccount = await accounts.findOne({
+        where: {
+          id: req.accountData.id
+        }
+      })
+      const correctPassword = await bcrypt.compare(req.body.oldPassword, checkedAccount.password);
+      if (correctPassword) {
+        if (req.body.newPassword === req.body.confirmPassword) {
+          delete req.body.confirmPassword;
+          const salt = await bcrypt.genSalt(10);
+          const hashPassword = await bcrypt.hash(req.body.newPassword, salt);
+          await accounts.update({
+            password: hashPassword,
+          }, {
+            where: {
+              id: req.accountData.id
+            }
+          })
+          return res.status(201).send("Password updated")
+        } else {
+          return res.status(401).send("Incorrect match")
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
 
 
@@ -484,31 +523,6 @@ module.exports = {
 //         expiresIn: "1h",
 //       });
 //       return res.status(200).send(token)
-//     }
-//   } catch (error) {
-//     console.log(error);
-//   }
-// },
-// resetPass: async (req, res, next) => {
-//   try {
-//     // Check token
-//     let token = req.body.token;
-//     const accountData = jwt.verify(token, process.env.SCRT_TKN);
-//     if (req.body.password === req.body.confirmPassword) {
-//       delete req.body.confirmPassword;
-//       const salt = await bcrypt.genSalt(10);
-//       const hashPassword = await bcrypt.hash(req.body.password, salt);
-//       req.body.password = hashPassword;
-//       await accounts.update({
-//         password: req.body.password,
-//       }, {
-//         where: {
-//           id: accountData.id
-//         }
-//       })
-//       return res.status(201).send("Password updated")
-//     } else {
-//       return res.status(401).send("Password and confirm Password not same")
 //     }
 //   } catch (error) {
 //     console.log(error);
