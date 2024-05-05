@@ -8,6 +8,7 @@ import ProfileModal from "../components/profileModal";
 import IconContainer from "../components/customComponents/IconContainer";
 import MyTweetsList from "../components/myTweetsList";
 import SavedTweetsList from "../components/savedTweetsList";
+import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
     const [myAccount, setMyAccount] = useState({});
@@ -18,6 +19,7 @@ function ProfilePage() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [myFollowings, setMyFollowings] = useState([])
     const [accounts, setAccounts] = useState([])
+    const navigate = useNavigate()
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -112,100 +114,93 @@ function ProfilePage() {
 
     return (
         <Layout>
-            <Container
-                bg={"black"}
-                color={"white"}
-                p={0} m={0}
-                maxW={'3xl'}
-            >
-                <Flex paddingY={'10px'} borderBottom={'1px'} borderColor={"gray"}>
-                    <Box padding={'10px'} marginRight={'30px'}>
-                        <FaArrowLeft size={20} />
-                    </Box>
+            <Flex paddingY={'10px'} borderBottom={'1px'} borderColor={"gray"}>
+                <Box padding={'10px'} marginRight={'30px'}>
+                    <FaArrowLeft size={20} />
+                </Box>
+                <Box>
+                    <Heading as={'h2'} size={'md'}>{myAccount.name}</Heading>
+                    <Heading as={'h4'} size={'sm'} color={'gray'}>{myTweets.length} posts</Heading>
+                </Box>
+            </Flex>
+            <Box padding={'20px'}>
+                <Flex justifyContent={'space-between'}>
                     <Box>
                         <Heading as={'h2'} size={'md'}>{myAccount.name}</Heading>
-                        <Heading as={'h4'} size={'sm'} color={'gray'}>{myTweets.length} posts</Heading>
+                        <Heading as={'h4'} size={'sm'} color={'gray'}>@{myAccount.username}</Heading>
                     </Box>
+                    <Button
+                        bg={'none'}
+                        color={"white"}
+                        border={'1px'}
+                        borderColor={'white'}
+                        borderRadius={'20px'}
+                        onClick={onOpen}
+                    >
+                        Edit Profile
+                    </Button>
+                    <ProfileModal onClose={onClose} isOpen={isOpen} />
                 </Flex>
-                <Box padding={'20px'}>
-                    <Flex justifyContent={'space-between'}>
-                        <Box>
-                            <Heading as={'h2'} size={'md'}>{myAccount.name}</Heading>
-                            <Heading as={'h4'} size={'sm'} color={'gray'}>@{myAccount.username}</Heading>
-                        </Box>
-                        <Button
-                            bg={'none'}
-                            color={"white"}
-                            border={'1px'}
-                            borderColor={'white'}
-                            borderRadius={'20px'}
-                            onClick={onOpen}
+                <Flex marginY={'10px'} color={"gray"}>
+                    <IconContainer>
+                        <FaCalendarAlt />
+                    </IconContainer>
+                    Joined {formatMonthYear(myAccount.createdAt)}
+                </Flex>
+                <Flex>
+                    <Flex onClick={() => navigate('/profile/followers')}>
+                        <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{followers.length}</Box>
+                        <Box color={"gray"}> followers</Box>
+                    </Flex>
+                    <Flex marginX={'20px'} onClick={() => navigate('/profile/following')}>
+                        <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{myFollowings.length}</Box>
+                        <Box color={"gray"}> following</Box>
+                    </Flex>
+                </Flex>
+            </Box>
+            <Box
+                bg={'black'}
+                color={'white'}
+                height={'70px'}
+                borderBottom={'1px'}
+                borderColor={'gray'}
+            >
+                <Container textAlign={'center'} height={'full'}>
+                    <UnorderedList
+                        height={'full'}
+                        display={'flex'}
+                        alignItems={'center'}
+                        justifyContent={'center'}
+                        listStyleType={'none'}
+                    >
+                        <ListItem
+                            marginX={'50px'}
+                            marginTop={'35px'}
+                            borderBottom={myPosts ? '4px' : ''}
+                            borderRadius={'2px'}
+                            borderColor={'lightblue'}
+                            onClick={() => setMyPosts(true)}
                         >
-                            Edit Profile
-                        </Button>
-                        <ProfileModal onClose={onClose} isOpen={isOpen} />
-                    </Flex>
-                    <Flex marginY={'10px'} color={"gray"}>
-                        <IconContainer>
-                            <FaCalendarAlt />
-                        </IconContainer>
-                        Joined {formatMonthYear(myAccount.createdAt)}
-                    </Flex>
-                    <Flex>
-                        <Flex>
-                            <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{followers.length}</Box>
-                            <Box color={"gray"}> followers</Box>
-                        </Flex>
-                        <Flex marginX={'20px'}>
-                            <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{myFollowings.length}</Box>
-                            <Box color={"gray"}> following</Box>
-                        </Flex>
-                    </Flex>
-                </Box>
-                <Box
-                    bg={'black'}
-                    color={'white'}
-                    height={'70px'}
-                    borderBottom={'1px'}
-                    borderColor={'gray'}
-                >
-                    <Container textAlign={'center'} height={'full'}>
-                        <UnorderedList
-                            height={'full'}
-                            display={'flex'}
-                            alignItems={'center'}
-                            justifyContent={'center'}
-                            listStyleType={'none'}
+                            <Heading as={'h3'} size={'sm'} padding={'5px'}>My Tweets</Heading>
+                        </ListItem>
+                        <ListItem
+                            marginX={'50px'}
+                            marginTop={'35px'}
+                            borderBottom={!myPosts ? '4px' : ''}
+                            borderRadius={'2px'}
+                            borderColor={'lightblue'}
+                            onClick={() => setMyPosts(false)}
                         >
-                            <ListItem
-                                marginX={'50px'}
-                                marginTop={'35px'}
-                                borderBottom={myPosts ? '4px' : ''}
-                                borderRadius={'2px'}
-                                borderColor={'lightblue'}
-                                onClick={() => setMyPosts(true)}
-                            >
-                                <Heading as={'h3'} size={'sm'} padding={'5px'}>My Tweets</Heading>
-                            </ListItem>
-                            <ListItem
-                                marginX={'50px'}
-                                marginTop={'35px'}
-                                borderBottom={!myPosts ? '4px' : ''}
-                                borderRadius={'2px'}
-                                borderColor={'lightblue'}
-                                onClick={() => setMyPosts(false)}
-                            >
-                                <Heading as={'h3'} size={'sm'} padding={'5px'}>Bookmarked Tweets</Heading>
-                            </ListItem>
-                        </UnorderedList>
-                    </Container>
-                </Box>
-                {myPosts ?
-                    <MyTweetsList myTweets={myTweets} getUser={getUser} updateComments={updateComments} />
-                    :
-                    <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
-                }
-            </Container>
+                            <Heading as={'h3'} size={'sm'} padding={'5px'}>Bookmarked Tweets</Heading>
+                        </ListItem>
+                    </UnorderedList>
+                </Container>
+            </Box>
+            {myPosts ?
+                <MyTweetsList myTweets={myTweets} getUser={getUser} updateComments={updateComments} />
+                :
+                <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
+            }
         </Layout>
     )
 }

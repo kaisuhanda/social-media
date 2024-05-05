@@ -1,15 +1,24 @@
-import { Input, InputGroup, InputLeftAddon } from "@chakra-ui/react";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { BiSearch } from "react-icons/bi";
 
-function SearchBar() {
+function SearchBar({ width }) {
     return (
-        <InputGroup width={["full", "sm"]}>
-            <InputLeftAddon children={<BiSearch />} bg={'black'} borderLeftRadius={'20px'}/>
+        <InputGroup
+            width={width}
+            borderRadius={'20px'}
+            bg={'gray.800'}
+            border={'none'}
+        >
+            <InputLeftElement pointerEvents='none' color={'gray.400'}>
+                <BiSearch />
+            </InputLeftElement>
             <Input
-                borderRadius={'20px'}
-                width={'300px'}
-                type="text"
-                placeholder="Search"
+                type='text'
+                placeholder='Search...'
+                border={'none'}
+                _focus={{ outline: 'none' }}
+                _hover={{ border: 'none' }}
+                bg={'transparent'}
             />
         </InputGroup>
     )

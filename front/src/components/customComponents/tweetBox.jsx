@@ -7,8 +7,10 @@ import IconContainer from "./IconContainer";
 import CommentBox from "./commentBox";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function TweetBox({ tweet, getUser, updateComments }) {
+    const navigate = useNavigate()
     const [textAreaVisible, setTextAreaVisible] = useState(false);
     const [liked, setLiked] = useState(false)
     const [bookMarked, setBookMarked] = useState(false)
@@ -150,7 +152,7 @@ function TweetBox({ tweet, getUser, updateComments }) {
                 padding={'7px'}
                 minHeight={'100px'}
                 borderTop={'1px'}
-                borderColor={'gray'}
+                borderColor={'gray.700'}
             >
                 <Box>
                     <IconContainer>
@@ -158,7 +160,7 @@ function TweetBox({ tweet, getUser, updateComments }) {
                     </IconContainer>
                 </Box>
                 <Box>
-                    <Box paddingBottom={'10px'}>
+                    <Box paddingBottom={'10px'} onClick={() => navigate(`/view/${tweet.user_id}`)}>
                         <Heading as={'h2'} size={'sm'}>{getUser(tweet.user_id).name}</Heading>
                         <Heading as={'h2'} size={'sm'} color={"gray"}>@{getUser(tweet.user_id).username}</Heading>
                     </Box>

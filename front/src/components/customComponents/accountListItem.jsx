@@ -64,7 +64,7 @@ function AccountListItem({ account, currentUserId }) {
     }
 
     return (
-        <ListItem display={"flex"} justifyContent={"space-between"} width={"100%"}>
+        <ListItem display={followed ? "none" : "flex"} justifyContent={"space-between"} width={"100%"}>
             <Flex>
                 <IconContainer>
                     <RiAccountCircleFill size={40} />

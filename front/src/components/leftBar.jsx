@@ -10,13 +10,13 @@ import { CgMoreO } from "react-icons/cg";
 import IconContainer from './customComponents/IconContainer';
 import { useNavigate } from 'react-router-dom';
 import ProfileModal from './profileModal';
-import { IoIosMore } from "react-icons/io";
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function LeftBar() {
     const navigate = useNavigate();
-    const username = localStorage.getItem('username');
-    const name = localStorage.getItem('name');
+    const [username, setUsername] = useState()
+    const [name, setName] = useState()
     const [settingsVisible, setSettingsVisible] = useState(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -24,6 +24,22 @@ function LeftBar() {
         localStorage.setItem('token', '')
         navigate('/')
     }
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const url = "http://localhost:2066/accounts/keep-login"
+        axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(response => {
+            const { success: keepLoginSuccess, findAccount } = response.data;
+            if (keepLoginSuccess && findAccount) {
+                setUsername(findAccount.username)
+                setName(findAccount.name)
+            }
+        })
+    }, [])
 
     return (
         <>
@@ -34,7 +50,7 @@ function LeftBar() {
                 paddingX={'120px'}
                 paddingY={'30px'}
                 borderRight={'1px'}
-                borderColor={'gray'}
+                borderColor={'gray.700'}
             >
                 <UnorderedList listStyleType={'none'} fontSize={'2xl'} spacing={6}>
                     <ListItem>
@@ -46,7 +62,7 @@ function LeftBar() {
                         </IconContainer>
                         Home
                     </ListItem>
-                    <ListItem display={'flex'}>
+                    <ListItem display={'flex'} onClick={() => navigate('/explore')}>
                         <IconContainer>
                             {<FaSearch />}
                         </IconContainer>

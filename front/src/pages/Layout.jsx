@@ -1,13 +1,19 @@
 import LeftBar from "../components/leftBar";
 import RightBar from "../components/rightBar";
-import { Flex } from "@chakra-ui/react";
-
+import { Container, Flex } from "@chakra-ui/react";
 function Layout(props) {
     return (
         <Flex>
             <LeftBar />
-            {props.children}
-            <RightBar accounts={props.accounts}/>
+            <Container
+                bg={"black"}
+                color={"white"}
+                p={0} m={0}
+                maxW={'3xl'}
+            >
+                {props.children}
+            </Container>
+            <RightBar accounts={props.accounts} />
         </Flex>
     )
 }

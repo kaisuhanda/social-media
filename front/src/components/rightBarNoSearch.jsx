@@ -4,26 +4,9 @@ import SearchBar from './search';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function RightBar() {
+function RightBarNoSearch() {
     const [currentUserId, setCurrentUserId] = useState(0)
-    const [myFollowings, setMyFollowings] = useState([])
     const [accounts, setAccounts] = useState([])
-
-    useEffect(() => {
-        const token = localStorage.getItem('token')
-        const url = "http://localhost:2066/accounts/my-followings"
-        axios.get(url, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then(response => {
-            // console.log("response : ", response.data.follows);
-            setMyFollowings(response.data.follows)
-        }).catch(error => {
-            console.log(token);
-            console.log(error);
-        })
-    }, [])
 
     const fetchAccounts = async () => {
         try {
@@ -71,9 +54,9 @@ function RightBar() {
                 borderLeft={'1px'}
                 borderColor={'gray.700'}
             >
-                <SearchBar width={'300px'} />
                 <Box
                     marginY={'20px'}
+                    width={'300px'}
                     bg={'gray.900'}
                     padding={'10px'}
                     borderRadius={'20px'}
@@ -100,26 +83,9 @@ function RightBar() {
                         </ListItem>
                     </UnorderedList>
                 </Box>
-                <Box marginY={'20px'} overflowY={"auto"}>
-                    <UnorderedList listStyleType={'none'} spacing={6}>
-                        <ListItem>
-                            <Heading as={'h2'} size={'lg'}>Who to follow</Heading>
-                        </ListItem>
-                        {accounts
-                            .filter(account => !myFollowings.some(following => following.id === account.id))
-                            .filter(account => account.id != currentUserId)
-                            .slice(0, 3).map((account, index) => (
-                                <AccountListItem
-                                    key={index}
-                                    account={account}
-                                    currentUserId={currentUserId}
-                                />
-                            ))}
-                    </UnorderedList>
-                </Box>
             </Box>
         </>
     )
 }
 
-export default RightBar;
+export default RightBarNoSearch;

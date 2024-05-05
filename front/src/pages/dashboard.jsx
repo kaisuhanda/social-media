@@ -65,30 +65,23 @@ function Dashboard() {
 
     return (
         <Layout accounts={accounts}>
-            <Container
-                bg={"black"}
-                color={"white"}
-                p={0} m={0}
-                maxW={'3xl'}
-            >
-                <NavBar following={following} setFollowing={setFollowing} />
-                <Post updateTweets={updateTweets} />
-                {!following ? (
-                    <TweetsList
-                        tweets={tweets}
-                        getUser={getUser}
-                        updateComments={updateComments}
-                    />
-                ) : (
-                    <FollowingTweetsList
-                        tweets={tweets}
-                        getUser={getUser}
-                        updateComments={updateComments}
-                    />
-                )}
-            </Container>
+            <NavBar following={following} setFollowing={setFollowing} />
+            <Post updateTweets={updateTweets} />
+            {!following ? (
+                <TweetsList
+                    tweets={tweets}
+                    getUser={getUser}
+                    updateComments={updateComments}
+                />
+            ) : (
+                <FollowingTweetsList
+                    tweets={tweets}
+                    getUser={getUser}
+                    updateComments={updateComments}
+                />
+            )}
         </Layout>
-    )    
+    )
 }
 
 export default Dashboard

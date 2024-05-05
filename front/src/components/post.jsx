@@ -33,7 +33,7 @@ function Post({ updateTweets }) {
         <Flex
             height={'150px'}
             borderBottom={'1px'}
-            borderColor={"gray"}
+            borderColor={"gray.700"}
         >
             <Box
                 height={'100%'}
@@ -48,6 +48,7 @@ function Post({ updateTweets }) {
                 <Textarea
                     placeholder="What's happening?"
                     border={"none"}
+                    variant='flushed'
                     value={tweet}
                     onChange={(e) => setTweet(e.target.value)}
                 />

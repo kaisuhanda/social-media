@@ -9,7 +9,7 @@ function NavBar({ following, setFollowing }) {
                 color={'white'}
                 height={'70px'}
                 borderBottom={'1px'}
-                borderColor={'gray'}
+                borderColor={'gray.700'}
             >
                 <Container textAlign={'center'} height={'full'}>
                     <UnorderedList

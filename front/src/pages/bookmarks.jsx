@@ -56,19 +56,12 @@ function BookMarksPage() {
 
     return (
         <Layout>
-            <Container
-                bg={"black"}
-                color={"white"}
-                p={0} m={0}
-                maxW={'3xl'}
-            >
-                <Box textAlign={"center"} padding={'10px'}>
-                    <Heading as={'h2'}>
-                        Bookmarks
-                    </Heading>
-                </Box>
-                <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
-            </Container>
+            <Box textAlign={"center"} padding={'10px'}>
+                <Heading as={'h2'}>
+                    Bookmarks
+                </Heading>
+            </Box>
+            <SavedTweetsList tweets={tweets} getUser={getUser} updateComments={updateComments} />
         </Layout>
     )
 }

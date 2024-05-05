@@ -104,57 +104,50 @@ function ViewProfilePage() {
 
     return (
         <Layout>
-            <Container
-                bg={"black"}
-                color={"white"}
-                p={0} m={0}
-                maxW={'3xl'}
-            >
-                <Flex paddingY={'10px'} borderBottom={'1px'} borderColor={"gray"}>
-                    <Box padding={'10px'} marginRight={'30px'}>
-                        <FaArrowLeft size={20} />
-                    </Box>
+            <Flex paddingY={'10px'} borderBottom={'1px'} borderColor={"gray"}>
+                <Box padding={'10px'} marginRight={'30px'}>
+                    <FaArrowLeft size={20} />
+                </Box>
+                <Box>
+                    <Heading as={'h2'} size={'md'}>{viewedAccount.name}</Heading>
+                    <Heading as={'h4'} size={'sm'} color={'gray'}>{viewedAccountTweets.length} posts</Heading>
+                </Box>
+            </Flex>
+            <Box padding={'20px'} borderBottom={'1px'} borderColor={'gray'}>
+                <Flex justifyContent={'space-between'}>
                     <Box>
                         <Heading as={'h2'} size={'md'}>{viewedAccount.name}</Heading>
-                        <Heading as={'h4'} size={'sm'} color={'gray'}>{viewedAccountTweets.length} posts</Heading>
+                        <Heading as={'h4'} size={'sm'} color={'gray'}>@{viewedAccount.username}</Heading>
                     </Box>
+                    <Button
+                        bg={'white'}
+                        borderRadius={'20px'}
+                        onClick={() => (followed ? handleUnfollow(user_id) : handleFollow(user_id))}
+                    >
+                        {!followed ? 'follow' : 'unfollow'}
+                    </Button>
                 </Flex>
-                <Box padding={'20px'} borderBottom={'1px'} borderColor={'gray'}>
-                    <Flex justifyContent={'space-between'}>
-                        <Box>
-                            <Heading as={'h2'} size={'md'}>{viewedAccount.name}</Heading>
-                            <Heading as={'h4'} size={'sm'} color={'gray'}>@{viewedAccount.username}</Heading>
-                        </Box>
-                        <Button
-                            bg={'white'}
-                            borderRadius={'20px'}
-                            onClick={() => (followed ? handleUnfollow(user_id) : handleFollow(user_id))}
-                        >
-                            {!followed ? 'follow' : 'unfollow'}
-                        </Button>
-                    </Flex>
-                    <Flex marginY={'10px'} color={"gray"}>
-                        <IconContainer>
-                            <FaCalendarAlt />
-                        </IconContainer>
-                        Joined {formatMonthYear(viewedAccount.createdAt)}
-                    </Flex>
+                <Flex marginY={'10px'} color={"gray"}>
+                    <IconContainer>
+                        <FaCalendarAlt />
+                    </IconContainer>
+                    Joined {formatMonthYear(viewedAccount.createdAt)}
+                </Flex>
+                <Flex>
                     <Flex>
-                        <Flex>
-                            <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{followers.length}</Box>
-                            <Box color={"gray"}> followers</Box>
-                        </Flex>
-                        <Flex marginX={'20px'}>
-                            <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{followings.length}</Box>
-                            <Box color={"gray"}> following</Box>
-                        </Flex>
+                        <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{followers.length}</Box>
+                        <Box color={"gray"}> followers</Box>
                     </Flex>
-                    <Heading fontSize={'20px'} marginTop={'40px'} fontWeight={700}>
-                        {viewedAccount.username}'s tweets
-                    </Heading>
-                </Box>
-                <ViewedProfileTweetsList viewedAccount={viewedAccount} viewedAccountTweets={viewedAccountTweets} />
-            </Container>
+                    <Flex marginX={'20px'}>
+                        <Box color={"white"} fontWeight={'bold'} marginRight={'5px'}>{followings.length}</Box>
+                        <Box color={"gray"}> following</Box>
+                    </Flex>
+                </Flex>
+                <Heading fontSize={'20px'} marginTop={'40px'} fontWeight={700}>
+                    {viewedAccount.username}'s tweets
+                </Heading>
+            </Box>
+            <ViewedProfileTweetsList viewedAccount={viewedAccount} viewedAccountTweets={viewedAccountTweets} />
         </Layout>
     )
 }
