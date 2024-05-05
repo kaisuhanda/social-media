@@ -1,4 +1,4 @@
-import { Box, ListItem, UnorderedList, } from "@chakra-ui/react";
+import { Box, Heading, ListItem, UnorderedList, } from "@chakra-ui/react";
 import TweetBox from "./customComponents/tweetBox";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -39,13 +39,13 @@ function SavedTweetsList({ tweets, getUser, updateComments }) {
         console.log("All bookmarks : ", bookmarks);
         setCurrentUserBookmarks(bookmarks.filter(bookmark => bookmark.user_id === currentUserId));
     }, [bookmarks, currentUserId]);
-    
+
     useEffect(() => {
         console.log("My bookmarks : ", currentUserBookmarks);
         const bookmarkIDs = currentUserBookmarks.map(bookmark => bookmark.tweet_id);
         setSavedTweetsID(bookmarkIDs);
     }, [currentUserBookmarks]);
-    
+
     useEffect(() => {
         console.log("Tweets: ", tweets);
         console.log("Saved Tweet IDs: ", savedTweetsID);
@@ -53,20 +53,24 @@ function SavedTweetsList({ tweets, getUser, updateComments }) {
         console.log("Filtered Tweets: ", filteredTweets);
         setSavedTweets(filteredTweets);
     }, [savedTweetsID, tweets]);
-    
+
 
     return (
         <Box overflowY={"auto"}>
-            <UnorderedList margin={0} maxHeight={'580px'}>
-                {savedTweets.map((tweet, index) => (
-                    <ListItem
-                        key={index}
-                        listStyleType={"none"}
-                    >
-                        <TweetBox tweet={tweet} getUser={getUser} updateComments={updateComments} />
-                    </ListItem>
-                ))}
-            </UnorderedList>
+            {savedTweets.length > 0 ? (
+                <UnorderedList margin={0} maxHeight={'580px'}>
+                    {savedTweets.map((tweet, index) => (
+                        <ListItem
+                            key={index}
+                            listStyleType={"none"}
+                        >
+                            <TweetBox tweet={tweet} getUser={getUser} updateComments={updateComments} />
+                        </ListItem>
+                    ))}
+                </UnorderedList>
+            ) : (
+                <Heading fontSize={'30px'} fontWeight={'500'}>You have no bookmarks :/</Heading>
+            )}
         </Box>
     );
 }

@@ -18,6 +18,10 @@ function TweetBox({ tweet, getUser, updateComments }) {
     const [currentUserId, setCurrentUserId] = useState(0)
 
     useEffect(() => {
+        console.log(currentUserId, tweet.user_id);
+    }, [currentUserId])
+
+    useEffect(() => {
         const token = localStorage.getItem('token')
         const url = "http://localhost:2066/accounts/keep-login"
         axios.get(url, {
@@ -94,7 +98,7 @@ function TweetBox({ tweet, getUser, updateComments }) {
 
     const handleBookmark = (tweet_id) => {
         try {
-            const url = `http://localhost:2066/tweets/bookmark/${tweet_id}` 
+            const url = `http://localhost:2066/tweets/bookmark/${tweet_id}`
             axios.post(url, null, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -112,7 +116,7 @@ function TweetBox({ tweet, getUser, updateComments }) {
 
     const handleUnBookmark = (tweet_id) => {
         try {
-            const url = `http://localhost:2066/tweets/unbookmark/${tweet_id}` 
+            const url = `http://localhost:2066/tweets/unbookmark/${tweet_id}`
             axios.post(url, null, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -160,7 +164,15 @@ function TweetBox({ tweet, getUser, updateComments }) {
                     </IconContainer>
                 </Box>
                 <Box>
-                    <Box paddingBottom={'10px'} onClick={() => navigate(`/view/${tweet.user_id}`)}>
+                    <Box paddingBottom={'10px'} onClick={() => {
+                        if (tweet.user_id === currentUserId) {
+                            console.log('to profile');
+                            navigate('/profile');
+                        } else {
+                            console.log('to view profile');
+                            navigate(`/view/${tweet.user_id}`);
+                        }
+                    }}>
                         <Heading as={'h2'} size={'sm'}>{getUser(tweet.user_id).name}</Heading>
                         <Heading as={'h2'} size={'sm'} color={"gray"}>@{getUser(tweet.user_id).username}</Heading>
                     </Box>
@@ -207,13 +219,13 @@ function TweetBox({ tweet, getUser, updateComments }) {
                         </Box>
                     )}
                 </Box>
-            </Flex>
+            </Flex >
             <Box margin={0}>
                 {tweet?.comments?.length > 0 && (
                     <CommentBox comments={tweet.comments} />
                 )}
             </Box>
-        </Box>
+        </Box >
     );
 }
 

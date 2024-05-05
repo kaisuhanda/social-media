@@ -8,32 +8,15 @@ import TweetsList from "../components/tweetsList"
 import TweetBox from "../components/customComponents/tweetBox"
 
 function ExplorePage() {
-    const [currentUserId, setCurrentUserId] = useState(0)
-    const [accounts, setAccounts] = useState([])
     const [tweets, setTweets] = useState([])
     const [comments, setComments] = useState([])
+    const [accounts, setAccounts] = useState([])
 
     useEffect(() => {
         const url = 'http://localhost:2066/accounts'
         axios.get(url).then(response => {
             setAccounts(response.data.accounts)
         })
-    }, [])
-
-    useEffect(() => {
-        const token = localStorage.getItem('token')
-        const url = "http://localhost:2066/accounts/keep-login"
-        axios.get(url, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then(response => {
-            const { success: keepLoginSuccess, findAccount } = response.data;
-            if (keepLoginSuccess && findAccount) {
-                setCurrentUserId(findAccount.id)
-            }
-        })
-        console.log("abchdbj ", currentUserId);
     }, [])
 
     const fetchTweets = async () => {
@@ -86,7 +69,7 @@ function ExplorePage() {
             </Box>
             <Box height={'40px'}></Box>
             <Box>
-                <FollowSuggestions accounts={accounts} currentUserId={currentUserId} />
+                <FollowSuggestions/>
             </Box>
             <Box>
                 <UnorderedList margin={0} maxHeight={'580px'}>

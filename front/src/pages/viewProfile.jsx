@@ -5,7 +5,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import IconContainer from "../components/customComponents/IconContainer";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ViewedProfileTweetsList from "../components/viewedProfileTweetsList";
 
 function ViewProfilePage() {
@@ -15,6 +15,20 @@ function ViewProfilePage() {
     const [followers, setFollowers] = useState([])
     const [followings, setFollowings] = useState([])
     const { user_id } = useParams()
+    const navigate = useNavigate()
+
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token')
+    //     axios.get("http://localhost:2066/accounts/keep-login", {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     }).then(response => {
+    //         if (response.data.findAccount.id === parseInt(user_id)) {
+    //             navigate('/profile')
+    //         }
+    //     })
+    // })
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -105,7 +119,7 @@ function ViewProfilePage() {
     return (
         <Layout>
             <Flex paddingY={'10px'} borderBottom={'1px'} borderColor={"gray"}>
-                <Box padding={'10px'} marginRight={'30px'}>
+                <Box padding={'10px'} marginRight={'30px'} onClick={() => navigate(-1)}>
                     <FaArrowLeft size={20} />
                 </Box>
                 <Box>

@@ -115,7 +115,7 @@ function ProfilePage() {
     return (
         <Layout>
             <Flex paddingY={'10px'} borderBottom={'1px'} borderColor={"gray"}>
-                <Box padding={'10px'} marginRight={'30px'}>
+                <Box padding={'10px'} marginRight={'30px'} onClick={() => navigate(-1)}>
                     <FaArrowLeft size={20} />
                 </Box>
                 <Box>
